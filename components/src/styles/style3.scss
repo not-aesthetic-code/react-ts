@@ -1,0 +1,56 @@
+$button-color: rgb(0, 160, 160);
+
+html,
+body,
+* {
+  box-sizing: border-box;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+button,
+input[type='submit'] {
+  background-color: $button-color;
+  border: 5px solid lighten($button-color, 30%);
+  color: white;
+  margin: 0 0.5em;
+  padding: 1em;
+  outline: none;
+  &:hover {
+    background-color: darken($button-color, 5%);
+  }
+  &:active {
+    background-color: darken($button-color, 10%);
+  }
+}
+
+input {
+  padding: 1em;
+  &:not([type='submit']) {
+    display: block;
+    margin: 0.5em;
+  }
+}
+
+form {
+  padding: 0.5em;
+  margin: 1em 0 0.5em 0;
+  display: flex;
+  flex-direction: column;
+  label {
+    text-align: center;
+    display: block;
+    margin: 1.5em 0 0.5em 0;
+  }
+}
+
+main {
+  text-align: center;
+}
+
+.count {
+  font-size: 8em;
+}
