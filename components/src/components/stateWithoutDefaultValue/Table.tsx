@@ -1,6 +1,14 @@
 import * as React from 'react';
+import { CharacterType } from './characters';
 
-export const Table = ({ children }: { children: React.ReactNode }) => {
+type TableProps = { children: React.ReactNode };
+type TableRowProps = {
+  // utilities may be helpful
+  heading: Exclude<Capitalize<keyof CharacterType>, 'Name'>;
+  value: CharacterType[keyof CharacterType];
+};
+
+export const Table = ({ children }: TableProps) => {
   return (
     <table>
       <tbody>{children}</tbody>
@@ -8,13 +16,7 @@ export const Table = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const TableRow = ({
-  heading,
-  value,
-}: {
-  heading: string;
-  value: string | number;
-}) => {
+export const TableRow = ({ heading, value }: TableRowProps) => {
   return (
     <tr>
       <th>{heading}</th>

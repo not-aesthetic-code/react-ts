@@ -1,94 +1,77 @@
+import * as React from 'react';
 
-import {  ChangeEvent } from "react";
-import {  useReducer } from 'react';
+/**
+ * We're going to try two things here.
+ *
+ * - We want to make it so that the CurrentUser component accepts all
+ * of the properties from the UserModel *except* for `accountId`.
+ *
+ * - We want the Friend component to read the properties from the
+ * CurrentUser component and use the same props. (I know it's contrived,
+ * but see if you can do it without reusing the same type.)
+ */
 
+type UserModel = {
+  accountId: string;
+  displayName: string;
+  isVerified: boolean;
+};
 
+const currentUser = {
+  displayName: 'J Mascis',
+  accountId: '123',
+  isVerified: true,
+};
 
-export default function Counter() {
-  const [count, dispatch] = useReducer(reducer, {count: 0});
-  
+const friends: UserModel[] = [
+  { displayName: 'Brontosaurus', accountId: '234', isVerified: false },
+  { displayName: 'Stegasaurus', accountId: '456', isVerified: true },
+  { displayName: 'Tyrannosaurus', accountId: '789', isVerified: true },
+];
 
+// template literals unify 2 sets
+type LawChaos = 'lawful' | 'neutral' | 'chaotic';
+type GoodEvil = 'good' | 'neutral' | 'evil';
+
+type Alignment = `${LawChaos}-${GoodEvil}`;
+
+type CurrentUserProps = Omit<UserModel, 'accountId'>;
+
+const CurrentUser = ({ displayName, isVerified }: CurrentUserProps) => {
   return (
-    <main className="Counter">
-      <h1>Days Since Last Incident</h1>
-      <p className="count">{count.count}</p>
-      <section className="controls">
-        <button onClick={increment}>Increment</button>
-        <button onClick={reset}>Reset</button>
-        <button onClick={ decrement}>Decrement</button>
-      </section>
-      <section className="controls">
-        <form onSubmit={() => {}}>
-          <label htmlFor="set-to">Set Count</label>
-          <input id="set-to" type="number" onChange={setCount} />
+    <header className="current-user">
+      <h2>
+        {displayName} {isVerified && '✅'}
+      </h2>
+    </header>
+  );
+};
 
-          <input type="submit" />
-        </form>
+const Friend = ({
+  displayName,
+  isVerified,
+}: React.ComponentProps<typeof CurrentUser>) => {
+  return (
+    <li className="friend">
+      {displayName} {isVerified && '✓'}
+    </li>
+  );
+};
+
+const Application = () => {
+  return (
+    <main>
+      <CurrentUser {...currentUser} />
+      <section>
+        <h3>Friends</h3>
+        <ul>
+          {friends.map((friend) => (
+            <Friend key={friend.accountId} {...friend} />
+          ))}
+        </ul>
       </section>
     </main>
   );
-
-  function increment() {
-    dispatch({type: 'INCREMENT_COUNT'});
-  }
-  function decrement() {
-    dispatch({type: 'DECREMENT_COUNT'});
-
-  }
-  function reset() {
-    dispatch({type: 'RESET_COUNT'});
-
-  }
-
-  function setCount(event: ChangeEvent<HTMLInputElement>) {
-    dispatch({type: 'UPDATE_COUNT', payload :+event.target.value });
-
-  }
-}
-
-type CountData = {
-  count: number;
 };
 
-type CountState = CountData & { count: number };
-
-type BasicCounterAction = {
-    type: "DECREMENT_COUNT" | "INCREMENT_COUNT" |  "RESET_COUNT";
-  };
-
-type SetCounterAction = {
-    type: "UPDATE_COUNT";
-    payload: number;
-}
-  
-
-type CounterAction = BasicCounterAction | SetCounterAction
-
-
-function reducer(state: CountState, action: CounterAction) {
-    switch (action.type) {
-      case "INCREMENT_COUNT":
-        return {
-          count: state.count + 1,
-        };
-      case "DECREMENT_COUNT":
-        return {
-          count: state.count - 1,
-        };
-      case "UPDATE_COUNT":
-        return {
-          count: action.payload,
-        };
-        case "RESET_COUNT":
-            return {
-    
-              count: 0,
-            };
-      default: 
-        return state
-    }
-  
-  }
-  
-
-
+export default Application;
